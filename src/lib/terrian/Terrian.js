@@ -6,7 +6,7 @@ const INIT_HEATMAP = Symbol('INIT_HEATMAP')
 
 const HeatmapOptions = {
   radius: 100,
-  maxOpacity: 0.8,
+  maxOpacity: 0.6,
   minOpacity: 0.1,
   blur: 1,
   gradient: { 
@@ -50,7 +50,6 @@ class Terrian extends THREE.Object3D {
         side: THREE.DoubleSide
       })
     )
-    plane.position.x = this.options.width / 2
     this.add(plane)
   }
   [ INIT_HEATMAP ] () {
@@ -107,8 +106,7 @@ class Terrian extends THREE.Object3D {
       geometry,
       material
     )
-    this.plane.position.z = 10
-    this.plane.position.x = this.options.width / 2
+    this.plane.position.z = 1
     this.add(this.plane)
   }
 

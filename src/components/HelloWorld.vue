@@ -17,35 +17,35 @@ export default {
     let ht = new HT(this.$refs.points)
 
     const MAX = 100
+    const positionList = [
+      [450, 730],
+      [450, 1530],
+      [450, 2400],
+      [2100, 1200],
+      [2100, 2000],
+      [2100, 2800],
+      [4300, 1000],
+      [4300, 1300],
+      [4300, 1670],
+      [4300, 2500],
+      [5520, 1210],
+      [5520, 1860],
+      [5520, 2544],
+      [6080, 1210],
+      [6080, 1860],
+      [6080, 2544],
+      [6596, 1210],
+      [6596, 1860],
+      [6596, 2544],
+      [7100, 1210],
+      [7100, 1860],
+      [7100, 2544],
+      [7630, 1210],
+      [7630, 1860],
+      [7630, 2544],
+    ]
 
     function makeData (width, height, floor = 1) {
-      let positionList = [
-        [450, 730],
-        [450, 1530],
-        [450, 2400],
-        [2100, 1200],
-        [2100, 2000],
-        [2100, 2800],
-        [4300, 1000],
-        [4300, 1300],
-        [4300, 1670],
-        [4300, 2500],
-        [5520, 1210],
-        [5520, 1860],
-        [5520, 2544],
-        [6080, 1210],
-        [6080, 1860],
-        [6080, 2544],
-        [6596, 1210],
-        [6596, 1860],
-        [6596, 2544],
-        [7100, 1210],
-        [7100, 1860],
-        [7100, 2544],
-        [7630, 1210],
-        [7630, 1860],
-        [7630, 2544],
-      ]
 
       let data
       if (floor === 1) {
@@ -79,11 +79,8 @@ export default {
         })
       }
 
-
-
       let mesh = []
       for (let i = 0; i < width; i += 75) {
-        // mesh.push()
         for (let j = 0; j < height; j+= 75) {
           mesh.push({
             x: i,
@@ -105,8 +102,20 @@ export default {
       // })
     }
 
-    let data = 
-    ht.setData({
+    function makePaopaoData (width, height, floor = 1) {
+      return new Array(5).fill(1).map(() => {
+        return {
+          x: (Math.random() - 0.5) * width,
+          y: (Math.random() - 0.5) * height,
+          size: 50 * Math.random() + 25,
+          speed: Math.random() * 3 + 1,
+          delay: Math.random(),
+          title: 'xxxxx'
+        }
+      })
+    }
+
+    ht.setHeatmapData({
       1: {
         max: MAX,
         data: makeData(925, 400, 1)
@@ -121,8 +130,14 @@ export default {
       }
     })
 
+    ht.setPaopaoData({
+      1: makePaopaoData(925, 400, 1),
+      3: makePaopaoData(325, 400, 3),
+      4: makePaopaoData(543, 400, 4)
+    })
+
     setInterval(() => {
-      ht.setData({
+      ht.setHeatmapData({
         1: {
           max: MAX,
           data: makeData(925, 400, 1)
@@ -135,6 +150,11 @@ export default {
           max: MAX,
           data: makeData(543, 400, 4)
         }
+      })
+      ht.setPaopaoData({
+        1: makePaopaoData(925, 400, 1),
+        3: makePaopaoData(325, 400, 3),
+        4: makePaopaoData(543, 400, 4)
       })
     }, 3000)
 

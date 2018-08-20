@@ -1,9 +1,11 @@
 import Terrian from './terrian/Terrian'
+import Paopao from './paopao/Paopao'
 
 const THREE = window.THREE
 
 const INIT = Symbol('INIT')
 const INIT_PLANE = Symbol('INIT_PLANE')
+const INIT_PAOPAO = Symbol('INIT_PAOPAO')
 
 function getStyle (el, name) {
   if (window.getComputedStyle) {
@@ -24,6 +26,7 @@ class HeatmapTerrian {
     this.options = Object.assign({}, def, opt)
     this[ INIT ]()
     this[ INIT_PLANE ]()
+    this[ INIT_PAOPAO ]()
     this._render()
   }
   [INIT] () {
@@ -71,34 +74,61 @@ class HeatmapTerrian {
 
   }
   [INIT_PLANE] () {
+    this.group1 = new THREE.Group()
+    this.group3 = new THREE.Group()
+    this.group4 = new THREE.Group()
+    this.scene.add(this.group1, this.group3, this.group4)
+
     this.plane1 = new Terrian({
       width: 925,
       height: 400,
       planeImage: '/static/image/floor1_sm.png'
     })
-    this.scene.add(this.plane1)
+    this.group1.position.x = 925 / 2
+    this.group1.add(this.plane1)
+    this.group1.position.z = -250
 
     this.plane3 = new Terrian({
       width: 325,
       height: 400,
       planeImage: '/static/image/floor3_sm.png'
     })
-    this.plane3.position.z = 300
-    this.scene.add(this.plane3)
+    this.group3.add(this.plane3)
+    this.group3.position.x = 325 / 2
+    this.group3.position.z = 0
+    this.group3.position.y = 200
 
     this.plane4 = new Terrian({
       width: 543,
       height: 400,
       planeImage: '/static/image/floor4_sm.png'
     })
-    this.plane4.position.z = 600
-    this.scene.add(this.plane4)
+    this.group4.add(this.plane4)
+    this.group4.position.x = 543 / 2
+    this.group4.position.z = 250
+    this.group4.position.y = 350
   }
-
-  setData (data) {
+  [ INIT_PAOPAO ] () {
+    this.paopao1 = new Paopao()
+    this.paopao3 = new Paopao()
+    this.paopao4 = new Paopao()
+    this.group1.add(this.paopao1)
+    this.group3.add(this.paopao3)
+    this.group4.add(this.paopao4)
+  }
+  setHeatmapData (data) {
     this.plane1.setData(data[1])
     this.plane3.setData(data[3])
     this.plane4.setData(data[4])
+  }
+
+  setPaopaoData (data) {
+    this.paopao1.setData(data[1])
+    this.paopao3.setData(data[3])
+    this.paopao4.setData(data[4])
+    // console.log(data)
+    // this.paopao.update()
+    // this.paopao.setData([{x: 1, y: 2, size: 100}])
   }
 
   update () {
@@ -106,6 +136,9 @@ class HeatmapTerrian {
     this.plane1.update({delta})
     this.plane3.update({delta})
     this.plane4.update({delta})
+    this.paopao1.update({delta})
+    this.paopao3.update({delta})
+    this.paopao4.update({delta})
   }
 
   render () {
