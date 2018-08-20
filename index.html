@@ -7,9 +7,22 @@
   </head>
   <body>
     <div id="app"></div>
-    <script src="/static/heatmap.js"></script>
-    <script src="/static/three.min.js"></script>
-    <script src="/static/TrackballControls.js"></script>
+    <script src="/static/js/heatmap.js"></script>
+    <script src="/static/js/three.min.js"></script>
+    <script src="/static/js/TrackballControls.js"></script>
+
+    <!-- Note the additional JS files! always need all of these for postprocessing. -->
+    <script src="/static/js/postprocessing/EffectComposer.js"></script>
+    <script src="/static/js/postprocessing/RenderPass.js"></script>
+    <script src="/static/js/postprocessing/MaskPass.js"></script>
+    <script src="/static/js/postprocessing/ShaderPass.js"></script>
+    <script src="/static/js/shaders/CopyShader.js"></script>
+    <script src="/static/js/shaders/FXAAShader.js"></script>
+
+    <!-- separate out the shaders specific to this demo -->
+    <script src="/static/js/shaders/ConvolutionShader.js"></script>
+    <script src="/static/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="/static/js/postprocessing/UnrealBloomPass.js"></script>
     <!-- built files will be auto injected -->
   </body>
 </html>
