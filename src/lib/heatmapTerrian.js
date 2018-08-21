@@ -7,6 +7,14 @@ const INIT = Symbol('INIT')
 const INIT_PLANE = Symbol('INIT_PLANE')
 const INIT_PAOPAO = Symbol('INIT_PAOPAO')
 
+const PLANE1_WIDTH = 925
+const PLANE3_WIDTH = 325
+const PLANE4_WIDTH = 543
+const PLANE1_HEIGHT = 400
+const PLANE3_HEIGHT = 400
+const PLANE4_HEIGHT = 400
+
+
 function getStyle (el, name) {
   if (window.getComputedStyle) {
     return window.getComputedStyle(el, null)[name]
@@ -48,7 +56,8 @@ class HeatmapTerrian {
     this.renderer.toneMappingExposure = Math.pow( 1.05, 4.0 )
 
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 5, 5000)
-    this.camera.position.z = 600
+    this.camera.position.z = 100
+    this.camera.position.y = -1000
 
     this.cameraControl = new THREE.TrackballControls(this.camera, this.renderer.domElement)
 
@@ -61,7 +70,7 @@ class HeatmapTerrian {
     var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2( window.innerWidth, window.innerHeight ), 
       1.4,
       2,
-      0.7)
+      0.8)
     bloomPass.renderToScreen = true
 
     this.composer = new THREE.EffectComposer(this.renderer)
@@ -77,36 +86,40 @@ class HeatmapTerrian {
     this.group1 = new THREE.Group()
     this.group3 = new THREE.Group()
     this.group4 = new THREE.Group()
-    this.scene.add(this.group1, this.group3, this.group4)
-
-    this.plane1 = new Terrian({
-      width: 925,
-      height: 400,
-      planeImage: '/static/image/floor1_sm.png'
-    })
-    this.group1.position.x = 925 / 2
-    this.group1.add(this.plane1)
+    this.group1.position.x = PLANE1_WIDTH / 2 - PLANE1_WIDTH / 2
     this.group1.position.z = -250
 
-    this.plane3 = new Terrian({
-      width: 325,
-      height: 400,
-      planeImage: '/static/image/floor3_sm.png'
-    })
-    this.group3.add(this.plane3)
-    this.group3.position.x = 325 / 2
+    this.group3.position.x = PLANE3_WIDTH / 2 - PLANE1_WIDTH / 2
     this.group3.position.z = 0
     this.group3.position.y = 200
 
-    this.plane4 = new Terrian({
-      width: 543,
-      height: 400,
-      planeImage: '/static/image/floor4_sm.png'
-    })
-    this.group4.add(this.plane4)
-    this.group4.position.x = 543 / 2
+    this.group4.position.x = PLANE4_WIDTH / 2 - PLANE1_WIDTH / 2
     this.group4.position.z = 250
     this.group4.position.y = 350
+
+    this.scene.add(this.group1, this.group3, this.group4)
+
+    this.plane1 = new Terrian({
+      width: PLANE1_WIDTH,
+      height: PLANE1_HEIGHT,
+      planeImage: '/static/image/floor1_sm.png'
+    })
+
+    this.plane3 = new Terrian({
+      width: PLANE3_WIDTH,
+      height: PLANE3_HEIGHT,
+      planeImage: '/static/image/floor3_sm.png'
+    })
+
+    this.plane4 = new Terrian({
+      width: PLANE4_WIDTH,
+      height: PLANE4_HEIGHT,
+      planeImage: '/static/image/floor4_sm.png'
+    })
+    this.group1.add(this.plane1)
+    this.group3.add(this.plane3)
+    this.group4.add(this.plane4)
+
   }
   [ INIT_PAOPAO ] () {
     this.paopao1 = new Paopao()
@@ -126,9 +139,6 @@ class HeatmapTerrian {
     this.paopao1.setData(data[1])
     this.paopao3.setData(data[3])
     this.paopao4.setData(data[4])
-    // console.log(data)
-    // this.paopao.update()
-    // this.paopao.setData([{x: 1, y: 2, size: 100}])
   }
 
   update () {
@@ -142,8 +152,8 @@ class HeatmapTerrian {
   }
 
   render () {
-    this.composer.render()
-    // this.renderer.render(this.scene, this.camera)
+    // this.composer.render()
+    this.renderer.render(this.scene, this.camera)
     this.cameraControl.update()
   }
 

@@ -103,14 +103,15 @@ export default {
     }
 
     function makePaopaoData (width, height, floor = 1) {
-      return new Array(5).fill(1).map(() => {
+      return new Array(5).fill(1).map((d, i) => {
+        let title = '我只是个测试' + i
         return {
           x: (Math.random() - 0.5) * width,
           y: (Math.random() - 0.5) * height,
-          size: 50 * Math.random() + 25,
-          speed: Math.random() * 3 + 1,
-          delay: Math.random(),
-          title: 'xxxxx'
+          size: title.length * 10,
+          speed: Math.random() * 0.5 + 0.5,
+          delay: Math.random() * 2,
+          title: title
         }
       })
     }

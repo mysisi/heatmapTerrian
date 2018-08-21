@@ -1,3 +1,6 @@
+import vs from './Paopao.vs'
+import fs from './Paopao.fs'
+
 const INIT = Symbol('INIT')
 const FILL = Symbol('FILL')
 const PUSH = Symbol('PUSH')
@@ -33,10 +36,9 @@ class Paopao extends THREE.Object3D {
     })
     this.sprite.position.x = this.getProperty('x')
     this.sprite.position.y = this.getProperty('y')
-    this.sprite.position.z = -this.getProperty('size')
-    this.sprite.scale.x = this.getProperty('size')
-    this.sprite.scale.y = this.getProperty('size')
-    this.sprite.scale.z = this.getProperty('size')
+    this.sprite.position.z = this.getProperty('z')
+    this.sprite.material.uniforms.u_scale.value = this.getProperty('size')
+    this.updateCanvas()
   }
   resetPropeties () {
     let keys = Object.keys(BASIC_CONFIG)
@@ -52,18 +54,64 @@ class Paopao extends THREE.Object3D {
     this.properties.set(key, value)
   }
   [ INIT ] () {
-    let texture = new THREE.TextureLoader().load('/static/image/paopao2.png')
-    var spriteMaterial = new THREE.SpriteMaterial( { map: texture, color: '#00aaff' } )
-    this.sprite = new THREE.Sprite( spriteMaterial )
-    this.sprite.scale.x = 0
-    this.sprite.scale.z = 0
-    this.sprite.scale.y = 0
+    this.canvas = this.getCanvas()
+    var geometry = new THREE.PlaneGeometry( 1, 1, 2, 2 )
+    var texture = new THREE.TextureLoader().load('/static/image/chat2.png')
+    var textTexture = new THREE.Texture(this.canvas)
+    textTexture.needsUpdate = true
+    var material = new THREE.ShaderMaterial({
+      transparent: true,
+      vertexShader: vs,
+      fragmentShader: fs,
+      uniforms: {
+        u_color: { value: new THREE.Color('#0055aa') },
+        u_map: {value: texture},
+        u_text: {value: textTexture},
+        u_scale: {value: 0},
+        u_opacity: {value: 0.7}
+      }
+    })
+    this.sprite = new THREE.Mesh( geometry, material )
     this.add(this.sprite)
+  }
+  updateCanvas () {
+    let title = this.getProperty('title')
+    let length = title.length
+    const totalWidth = 180
+    let fontSize = ~~(totalWidth / length) + 'px'
+    var ctx = this.canvas.getContext('2d')
+    ctx.clearRect(0, 0, 256, 256)
+    ctx.font = 'normal normal ' + fontSize + ' 微软雅黑'
+    ctx.fillStyle = 'white'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'top'
+    ctx.fillText(title, 40, 90)
+    this.sprite.material.uniforms.u_text.value.needsUpdate = true
+  }
+  getCanvas () {
+    const width = 256
+    const height = 256
+    var canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    var ctx = canvas.getContext('2d')
+    ctx.font = 'normal normal 30px 微软雅黑'
+    ctx.fillStyle = 'white'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'top'
+    ctx.fillText('我只是是个测', 40, 90)
+    return canvas
   }
   update ({delta}) {
     this.setProperty('elapsed', this.getProperty('elapsed') + delta)
+    let during = this.getProperty('during')
+    let delay = this.getProperty('delay')
+    let elapsed = this.getProperty('elapsed')
+    let size = this.getProperty('size')
+    let percent =  (Math.max((elapsed - delay), 0) % during) / during
+
     this.sprite.position.z += this.getProperty('speed')
-    // this.sprite.material.rotation += 0.04
+    this.sprite.material.uniforms.u_scale.value = size + Math.sin(percent * Math.PI) * size / 2
   }
 }
 

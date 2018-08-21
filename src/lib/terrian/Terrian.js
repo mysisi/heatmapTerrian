@@ -43,7 +43,7 @@ class Terrian extends THREE.Object3D {
   }
   [ INIT_BASEMAP ] () {
     var plane = new THREE.Mesh(
-      new THREE.PlaneGeometry(this.options.width, this.options.height),
+      new THREE.PlaneGeometry(this.options.width, this.options.height, 2, 2),
       new THREE.MeshBasicMaterial({
         map: new THREE.TextureLoader().load(this.options.planeImage),
         color: '#6699ff',
@@ -53,7 +53,7 @@ class Terrian extends THREE.Object3D {
     this.add(plane)
   }
   [ INIT_HEATMAP ] () {
-    let geometry = new THREE.PlaneBufferGeometry(this.options.width, this.options.height, 100, 100)
+    let geometry = new THREE.PlaneBufferGeometry(this.options.width, this.options.height, 50, 50)
 
     this.heatmap = this.createHeatmap(HeatmapOptions)
 
